@@ -8,18 +8,25 @@ import ImageModal from "./components/ImageModal/ImageModal";
 import { fetchData } from "./images-api";
 import toast from "react-hot-toast";
 import "./App.css";
+import { Image } from "./App.types";
+
+interface ImageData {
+  total_pages: number;
+  total: number;
+  results: Image[];
+}
 
 const App = () => {
-  const [query, setQuery] = useState("");
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [totalPages, setTotalPages] = useState(0);
-  const [page, setPages] = useState(0);
-  const [modalIsOpen, setIsOpen] = useState(false);
-  const [imageForModal, setImageForModal] = useState({});
+  const [query, setQuery] = useState<string>("");
+  const [images, setImages] = useState<Image[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [page, setPages] = useState<number>(0);
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+  const [imageForModal, setImageForModal] = useState<Image | null>(null);
 
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string): void => {
     setQuery(newQuery);
     setImages([]);
     setPages(1);
@@ -27,11 +34,14 @@ const App = () => {
 
   useEffect(() => {
     if (!query) return;
-    const fetchImages = async () => {
+    const fetchImages = async (): Promise<void> => {
       try {
         setError(false);
         setLoading(true);
-        const { results, total_pages } = await fetchData(query, page);
+        const { results, total_pages }: ImageData = await fetchData(
+          query,
+          page
+        );
         setTotalPages(total_pages);
         setImages((prevImgs) => [...prevImgs, ...results]);
       } catch {
@@ -47,7 +57,7 @@ const App = () => {
       toast("There are no more images...");
     }
   }, [totalPages, page]);
-  function openModal(newItem) {
+  function openModal(newItem: Image): void {
     if (!modalIsOpen) {
       setIsOpen(true);
     }

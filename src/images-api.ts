@@ -7,7 +7,10 @@ axios.defaults.headers.common["Authorization"] = `Client-ID ${API_KEY}`;
 axios.defaults.headers.common["Accept-Version"] = "v1";
 axios.defaults.baseURL = BASE_URL;
 
-export const fetchData = async (query, nextPage) => {
+export const fetchData = async <T>(
+  query: string,
+  nextPage: number
+): Promise<T> => {
   const response = await axios.get("search/photos", {
     params: {
       query: query,
